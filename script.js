@@ -47,7 +47,6 @@ inputElement.addEventListener("keydown", function(ev){
 
 inputElement.addEventListener("keypress", EventHandler, true);
 
-// =================================== THE FIX IS HERE ===================================
 function EventHandler(evt) {
     if (document.activeElement.id !== "converter") return;
 
@@ -63,7 +62,6 @@ function EventHandler(evt) {
     else {
         preventDflt = false;
     }
-// ================================= END OF THE FIX ==================================
     
     if (evt.defaultPrevented == true && preventDflt == false) {
         defprev = true;
@@ -169,7 +167,7 @@ function handlePhonetic(charKey) {
     if (mPrevChar == 3962) {
         if (VYANJANA_SANYAKA_LIST.indexOf(primaryCode) != '-1') {
             deleteBackward();
-            primaryCode = VYANJANA_SANYAKA_MAP[primaryCode];
+            primaryCode = VYANJANA_SANYaka_MAP[primaryCode];
             mPrevChar = primaryCode;
         } else {
             deleteBackward();
@@ -507,3 +505,55 @@ function handleWijesekara(charKey) {
         mPrevChar = primaryCode;
     }
 }
+
+
+// Get references to the buttons and the textarea
+const clearButton = document.querySelector('[data-action="clear"]');
+const copyButton = document.querySelector('[data-action="copy"]');
+const downloadButton = document.querySelector('[data-action="download"]');
+const converterTextarea = document.getElementById('converter');
+
+// 1. Event Listener for the Clear Button
+clearButton.addEventListener('click', () => {
+  converterTextarea.value = ''; // Set the textarea value to empty
+  converterTextarea.focus(); // Focus the textarea for immediate typing
+});
+
+// 2. Event Listener for the Copy Button
+copyButton.addEventListener('click', () => {
+  const textToCopy = converterTextarea.value;
+  if (textToCopy) {
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      // Provide user feedback on successful copy
+      const originalContent = copyButton.innerHTML;
+      copyButton.textContent = 'Copied!';
+      setTimeout(() => {
+        copyButton.innerHTML = originalContent;
+      }, 2000); // Revert back after 2 seconds
+    }).catch(err => {
+      console.error('Error copying text: ', err); // Log error if copying fails
+    });
+  }
+});
+
+// 3. Event Listener for the Download Button
+downloadButton.addEventListener('click', () => {
+  const textToDownload = converterTextarea.value;
+  if (textToDownload) {
+    // Create a Blob (a file-like object) from the textarea content
+    const blob = new Blob([textToDownload], { type: 'text/plain;charset=utf-8' });
+    
+    // Create a temporary anchor element to trigger the download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'sinhala-text.txt'; // Set the filename for the download
+
+    // Programmatically click the link to start the download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up by removing the temporary link
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  }
+});
