@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
-  <meta name="theme-color" content="#1e1e2e" />
-  <title>Singlish → Sinhala Converter</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#131210" id="meta-theme-color" />
+  <title>සිංහල ලියනය — Singlish &amp; Wijesekara to Sinhala</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
-  <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
 
@@ -25,72 +21,198 @@
 
   <header class="site-header">
     <div class="brand">
-      <span class="logo" aria-hidden="true">සි</span>
-      <h1 class="title">Singlish → Sinhala</h1>
+      <div class="logo" aria-hidden="true">සි</div>
+      <div class="brand-text">
+        <div class="brand-title-row">
+          <h1 class="title">සිංහල ලියනය</h1>
+          <span class="badge-sub">Sinhala Typewriter</span>
+        </div>
+        <p class="subtitle">Phonetic Singlish &amp; Wijesekara keyboard converter</p>
+      </div>
     </div>
 
+    <div class="header-actions">
+      <div class="shortcut-pill" title="Press Ctrl + Space to quickly switch between Sinhala and English">
+        <span>Quick English</span>
+        <kbd>Ctrl</kbd><span>+</span><kbd>Space</kbd>
+      </div>
+
+      <button
+        type="button"
+        id="toggle-guide-btn"
+        class="icon-btn with-label"
+        aria-expanded="false"
+        aria-controls="key-guide-panel"
+        title="Show or hide key map reference"
+      >
+        <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/>
+          <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 16h8" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+        </svg>
+        <span>Key Map</span>
+      </button>
+
+      <button
+        type="button"
+        id="theme-btn"
+        class="icon-btn"
+        aria-label="Toggle color theme"
+        title="Switch light / dark theme"
+      >
+        <svg viewBox="0 0 24 24" class="icon icon-sun" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/>
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+        </svg>
+        <svg viewBox="0 0 24 24" class="icon icon-moon" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
   </header>
 
-  <main class="container">
-    <!-- Mode switch (keeps your original inputs/ids/values) -->
-    <section class="controls" aria-label="Typing mode">
-      <div class="typing-mode segmented" role="radiogroup" aria-label="Typing mode">
-        <label id="label-phonetic" class="seg-option">
-          <input type="radio" name="type" value="phonetic" id="phonetic" checked />
-          <span>Phonetic</span>
-        </label>
+  <main class="workspace guide-collapsed" id="workspace">
+    <!-- Primary Editor Column -->
+    <section class="editor-card" aria-label="Sinhala text editor">
+      <div class="editor-toolbar">
+        <div class="typing-mode segmented" role="radiogroup" aria-label="Typing layout mode">
+          <label id="label-phonetic" for="phonetic" class="seg-option active">
+            <input type="radio" name="type" value="phonetic" id="phonetic" checked />
+            <span class="seg-title">Phonetic</span>
+            <span class="seg-tag">Singlish</span>
+          </label>
 
-        <label id="label-wijesekara" class="seg-option">
-          <input type="radio" name="type" value="wijesekara" id="wijesekara" />
-          <span>Wijesekara</span>
-        </label>
-      </div>
-    </section>
+          <label id="label-wijesekara" for="wijesekara" class="seg-option">
+            <input type="radio" name="type" value="wijesekara" id="wijesekara" />
+            <span class="seg-title">Wijesekara</span>
+            <span class="seg-tag">Standard</span>
+          </label>
 
-    <!-- Editor card -->
-    <section class="editor-card">
-      <div class="editor-bar">
-        <p class="hint">Type in Singlish; output appears as Sinhala.</p>
+          <label id="label-english" for="english" class="seg-option">
+            <input type="radio" name="type" value="english" id="english" />
+            <span class="seg-title">English</span>
+            <span class="seg-tag">EN</span>
+          </label>
+        </div>
 
-        <!-- Action buttons are purely UI; logics are preserved -->
-        <div class="actions">
-          <button class="btn ghost" data-action="clear" type="button" title="Clear text">
-            <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
-              <path d="M3 6h18M9 6l.72-1.44A2 2 0 0 1 11.3 3h1.4a2 2 0 0 1 1.58.56L15 6m3 0v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Clear
-          </button>
-          <button class="btn ghost" data-action="copy" type="button" title="Copy text">
-            <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
-              <path d="M9 9V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <rect x="3" y="9" width="12" height="12" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            Copy
-          </button>
-          <button class="btn solid" data-action="download" type="button" title="Download as .txt">
-            <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
-              <path d="M12 3v12m0 0l4-4m-4 4l-4-4M4 21h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Download
-          </button>
+        <div class="toolbar-right">
+          <div class="font-controls" role="group" aria-label="Text size">
+            <button type="button" class="tool-btn" id="font-dec" title="Decrease font size" aria-label="Decrease font size">A−</button>
+            <button type="button" class="tool-btn" id="font-inc" title="Increase font size" aria-label="Increase font size">A+</button>
+          </div>
+
+          <div class="divider-v" aria-hidden="true"></div>
+
+          <div class="actions">
+            <button class="btn ghost" data-action="clear" type="button" title="Clear editor">
+              <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
+                <path d="M3 6h18M9 6l.72-1.44A2 2 0 0 1 11.3 3h1.4a2 2 0 0 1 1.58.56L15 6m3 0v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="btn-label">Clear</span>
+            </button>
+
+            <button class="btn ghost" data-action="copy" type="button" title="Copy to clipboard">
+              <svg viewBox="0 0 24 24" class="icon icon-copy-default" aria-hidden="true">
+                <path d="M9 9V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="3" y="9" width="12" height="12" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.75"/>
+              </svg>
+              <svg viewBox="0 0 24 24" class="icon icon-copy-check" aria-hidden="true" style="display:none">
+                <path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="btn-label">Copy</span>
+            </button>
+
+            <button class="btn solid" data-action="download" type="button" title="Download as UTF-8 .txt file">
+              <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
+                <path d="M12 3v12m0 0l4-4m-4 4l-4-4M4 21h16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="btn-label">Save .txt</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <textarea
-        id="converter"
-        placeholder="Start typing in Singlish…"
-        spellcheck="false"
-        autocomplete="off"
-        autocapitalize="off"
-        aria-label="Singlish input to convert"
-      ></textarea>
+      <div class="editor-body">
+        <textarea
+          id="converter"
+          placeholder="Singlish වලින් ටයිප් කරන්න… (උදා: ayubowan sri lanka → ආයුබෝවන් ශ්‍රී ලංකා)"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          aria-label="Sinhala text editor"
+        ></textarea>
+      </div>
+
+      <div class="editor-statusbar">
+        <div class="status-left">
+          <span class="mode-indicator" id="mode-indicator-dot"></span>
+          <span id="live-key-feedback" class="live-feedback">Ready — type phonetically in Singlish</span>
+        </div>
+
+        <div class="status-right">
+          <span id="draft-status" class="draft-status" title="Your text is automatically saved in this browser">Saved</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <span id="word-count">0 words</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <span id="char-count">0 chars</span>
+        </div>
+      </div>
     </section>
 
-    <footer class="site-footer">
-      <a href="https://github.com/chami2000/Singlish" rel="noopener">View Source</a>
-      <span class="dot">•</span>
-    </footer>
+    <!-- Interactive Reference & Key Map Panel -->
+    <aside class="guide-card" id="key-guide-panel" aria-label="Character Reference and Key Map">
+      <div class="guide-header">
+        <div>
+          <h2 class="guide-title" id="guide-mode-title">Phonetic Key Map</h2>
+          <p class="guide-desc">Click any character below to insert it at your cursor</p>
+        </div>
+        <div class="guide-search-wrap">
+          <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.75"/>
+            <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+          <input
+            type="search"
+            id="guide-search"
+            class="guide-search"
+            placeholder="Filter (e.g. ch, ඳ, zg)…"
+            aria-label="Filter key mappings"
+          />
+        </div>
+      </div>
+
+      <div class="guide-tabs" role="tablist" aria-label="Character categories">
+        <button type="button" class="guide-tab active" data-category="all" role="tab" aria-selected="true">All</button>
+        <button type="button" class="guide-tab" data-category="vowels" role="tab" aria-selected="false">ස්වර (Vowels)</button>
+        <button type="button" class="guide-tab" data-category="consonants" role="tab" aria-selected="false">ව්‍යංජන (Consonants)</button>
+        <button type="button" class="guide-tab" data-category="special" role="tab" aria-selected="false">බැඳි / සංයුක්ත (Special)</button>
+      </div>
+
+      <div class="guide-content" id="guide-grid">
+        <!-- Populated dynamically by script.js based on active typing mode -->
+      </div>
+
+      <div class="guide-footer-tips" id="guide-tips">
+        <div class="tip-row">
+          <span class="tip-badge">k → ක්</span>
+          <span class="tip-badge">ka → ක</span>
+          <span class="tip-badge">kaa → කා</span>
+          <span class="tip-badge">kA → කැ</span>
+          <span class="tip-badge">kr → ක්‍ර</span>
+          <span class="tip-badge">ky → ක්‍ය</span>
+          <span class="tip-badge">zg → ඟ</span>
+          <span class="tip-badge">zdh → ඳ</span>
+        </div>
+      </div>
+    </aside>
   </main>
+
+  <footer class="site-footer">
+    <span>Built for fast, accurate Sinhala typography</span>
+    <span class="dot" aria-hidden="true">·</span>
+    <span>Supports Phonetic Singlish &amp; Wijesekara layouts</span>
+    <span class="dot" aria-hidden="true">·</span>
+    <a href="https://github.com/chami2000/Singlish" target="_blank" rel="noopener">Source</a>
+  </footer>
 
   <script src="script.js"></script>
 </body>
